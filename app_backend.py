@@ -1,8 +1,86 @@
-from flask import Flask
+from flask import Flask, request, jsonify, render_template_string
+from flask_sqlalchemy import SQLAlchemy
 from dominate import document
 from dominate.tags import *
+import os
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'seu-secret-key-aqui'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///curriculo.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# Models
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    cargo = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    telefone = db.Column(db.String(20), nullable=False)
+    github = db.Column(db.String(200), nullable=False)
+    resumo = db.Column(db.Text, nullable=False)
+
+class Contato(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    assunto = db.Column(db.String(200), nullable=False)
+    mensagem = db.Column(db.Text, nullable=False)
+
+# API Routes
+@app.route('/api/contato', methods=['POST'])
+def enviar_contato():
+    data = request.get_json()
+    
+    contato = Contato(
+        nome=data['nome'],
+        email=data['email'],
+        assunto=data['assunto'],
+        mensagem=data['mensagem']
+    )
+    
+    db.session.add(contato)
+    db.session.commit()
+    
+    return jsonify({'message': 'Mensagem enviada com sucesso!'}), 201
+
+@app.route('/admin')
+def admin():
+    contatos = Contato.query.all()
+    
+    template = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Admin - Contatos</title>
+        <style>
+            body { font-family: Arial; margin: 20px; background: #f5f5f5; }
+            .container { max-width: 1000px; margin: 0 auto; }
+            .card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            h1 { color: #2c3e50; }
+            .contato { border-left: 4px solid #3498db; }
+            .meta { color: #666; margin-bottom: 10px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📧 Mensagens Recebidas</h1>
+            <a href="/" style="color: #3498db;">← Voltar ao site</a>
+            
+            {% for contato in contatos %}
+            <div class="card contato">
+                <div class="meta"><strong>{{ contato.nome }}</strong> ({{ contato.email }})</div>
+                <h4>{{ contato.assunto }}</h4>
+                <p>{{ contato.mensagem }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </body>
+    </html>
+    '''
+    
+    return render_template_string(template, contatos=contatos)
 
 @app.route('/')
 def home():
@@ -96,6 +174,7 @@ def home():
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href="/static/style.css")
         script(src="/static/animations.js", defer=True)
+        script(src="/static/contact.js", defer=True)
     
     with doc:
         with div(cls="container"):
@@ -200,8 +279,29 @@ def home():
                 with ul(cls="qualidades-list"):
                     for qualidade in data['qualidades']:
                         li(qualidade)
+            
+            # Formulário de contato
+            with section(cls="contato-form"):
+                h3("Entre em Contato")
+                with form(id="contact-form"):
+                    with div(cls="form-group"):
+                        input_(type="text", id="nome", placeholder="Seu nome", required=True)
+                    with div(cls="form-group"):
+                        input_(type="email", id="email", placeholder="Seu email", required=True)
+                    with div(cls="form-group"):
+                        input_(type="text", id="assunto", placeholder="Assunto", required=True)
+                    with div(cls="form-group"):
+                        textarea(id="mensagem", placeholder="Sua mensagem", rows="5", required=True)
+                    button("Enviar Mensagem", type="submit", cls="btn-submit")
+                
+                div(id="form-message", cls="form-message")
     
     return str(doc)
 
+def init_db():
+    with app.app_context():
+        db.create_all()
+
 if __name__ == '__main__':
+    init_db()
     app.run(debug=True, host='127.0.0.1', port=5000)
