@@ -1,0 +1,2 @@
+Flask==2.3.3
+dominate==2.8.0

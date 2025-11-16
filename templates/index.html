@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.nome }} - Currículo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="profile-section">
+                <div class="profile-avatar">
+                    <div class="avatar-circle">
+                        <span class="initials">KG</span>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h1>{{ data.nome }}</h1>
+                    <h2>{{ data.cargo }}</h2>
+                    <div class="contact-grid">
+                        <div class="contact-item">
+                            <i class="icon">📧</i>
+                            <span>{{ data.email }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="icon">📱</i>
+                            <span>{{ data.telefone }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="icon">📍</i>
+                            <span>{{ data.endereco }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="icon">📅</i>
+                            <span>{{ data.nascimento }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="icon">💻</i>
+                            <a href="{{ data.github }}" target="_blank" class="github-link">GitHub Portfolio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <section class="resumo">
+            <h3>Resumo Profissional</h3>
+            <p>{{ data.resumo }}</p>
+        </section>
+        
+        <section class="educacao">
+            <h3>Formação Acadêmica</h3>
+            {% for edu in data.educacao %}
+            <div class="item">
+                <h4>{{ edu.curso }}</h4>
+                <p class="instituicao">{{ edu.instituicao }} | {{ edu.periodo }}</p>
+                <p class="descricao">{{ edu.descricao }}</p>
+            </div>
+            {% endfor %}
+        </section>
+        
+        <section class="cursos">
+            <h3>Cursos e Certificações</h3>
+            {% for curso in data.cursos %}
+            <div class="item">
+                <h4>{{ curso.nome }}</h4>
+                <p class="periodo">{{ curso.periodo }}</p>
+                <p class="descricao">{{ curso.descricao }}</p>
+            </div>
+            {% endfor %}
+        </section>
+        
+        <section class="competencias">
+            <h3>Competências Técnicas</h3>
+            <div class="skills-grid">
+                {% for comp in data.competencias %}
+                <div class="skill-item">
+                    <span class="skill-name">{{ comp.nome }}</span>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: {{ comp.nivel * 20 }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        
+        <section class="idiomas">
+            <h3>Idiomas</h3>
+            {% for idioma in data.idiomas %}
+            <div class="idioma-item">
+                <strong>{{ idioma.idioma }}:</strong> {{ idioma.nivel }}
+            </div>
+            {% endfor %}
+        </section>
+        
+        <section class="qualidades">
+            <h3>Qualidades Pessoais</h3>
+            <ul class="qualidades-list">
+                {% for qualidade in data.qualidades %}
+                <li>{{ qualidade }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
