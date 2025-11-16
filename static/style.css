@@ -4,6 +4,78 @@
     box-sizing: border-box;
 }
 
+/* Animações */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes skillFill {
+    from { width: 0%; }
+    to { width: var(--skill-width); }
+}
+
+/* Classes para animações dinâmicas */
+.animate-in {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-skill {
+    animation: skillFill 1.5s ease-out forwards;
+}
+
+/* Efeito de hover suave para todos os elementos interativos */
+.contact-item, .item, .qualidades-list li, .skill-item {
+    cursor: pointer;
+}
+
+/* Animação de loading para o avatar */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.avatar-circle::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: rotate 3s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-circle:hover::before {
+    opacity: 1;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
@@ -20,6 +92,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     overflow: hidden;
+    animation: fadeInUp 0.8s ease-out;
 }
 
 header {
@@ -63,6 +136,13 @@ header::before {
     justify-content: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     border: 4px solid rgba(255,255,255,0.2);
+    animation: pulse 2s infinite;
+    transition: transform 0.3s ease;
+}
+
+.avatar-circle:hover {
+    transform: scale(1.1);
+    animation: none;
 }
 
 .initials {
@@ -82,6 +162,7 @@ header::before {
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     letter-spacing: -1px;
+    animation: slideInLeft 0.8s ease-out 0.2s both;
 }
 
 .profile-info h2 {
@@ -90,6 +171,7 @@ header::before {
     opacity: 0.95;
     font-weight: 300;
     color: #ecf0f1;
+    animation: slideInLeft 0.8s ease-out 0.4s both;
 }
 
 .contact-grid {
@@ -108,11 +190,13 @@ header::before {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.2);
     transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out;
 }
 
 .contact-item:hover {
     background: rgba(255,255,255,0.15);
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .contact-item .icon {
@@ -142,6 +226,12 @@ header::before {
 section {
     padding: 30px 40px;
     border-bottom: 1px solid #eee;
+    animation: fadeInUp 0.6s ease-out;
+    transition: transform 0.3s ease;
+}
+
+section:hover {
+    transform: translateY(-2px);
 }
 
 section:last-child {
@@ -155,10 +245,36 @@ h3 {
     padding-bottom: 10px;
     border-bottom: 2px solid #3498db;
     display: inline-block;
+    position: relative;
+    overflow: hidden;
+}
+
+h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    transition: width 0.5s ease;
+}
+
+h3:hover::after {
+    width: 100%;
 }
 
 .item {
     margin-bottom: 25px;
+    transition: all 0.3s ease;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.item:hover {
+    background: #f8f9fa;
+    transform: translateX(10px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .item h4 {
@@ -207,7 +323,25 @@ h3 {
     height: 100%;
     background: linear-gradient(135deg, #3498db, #2980b9);
     border-radius: 4px;
-    transition: width 0.3s ease;
+    animation: skillFill 1.5s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-level::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
 }
 
 .idioma-item {
@@ -231,6 +365,13 @@ h3 {
     border-radius: 8px;
     border-left: 4px solid #28a745;
     position: relative;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.qualidades-list li:hover {
+    transform: translateX(10px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
 }
 
 .qualidades-list li:before {
@@ -248,6 +389,13 @@ h3 {
     padding: 20px;
     border-radius: 8px;
     border-left: 4px solid #3498db;
+    transition: all 0.3s ease;
+}
+
+.resumo p:hover {
+    background: #e9ecef;
+    transform: scale(1.01);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
 }
 
 @media (max-width: 768px) {

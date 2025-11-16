@@ -9,7 +9,7 @@ def home():
     # Dados do currículo
     data = {
         'nome': 'Kayque Gregorio',
-        'cargo': 'Desenvolvedor Python | Estudante de Informática',
+        'cargo': 'Estudante de Informática',
         'email': 'gregoriokayque352@gmail.com',
         'telefone': '+55 11 98058-4791',
         'endereco': 'Rua Mar de Ross, Parque Ribeiro de Lima, Barueri - SP',
@@ -72,6 +72,7 @@ def home():
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href="/static/style.css")
+        script(src="/static/animations.js", defer=True)
     
     with doc:
         with div(cls="container"):
